@@ -1,16 +1,24 @@
-#include <Arduino.h>
+#include <Microcontroller.h>
+#include "NeoPixel.h"
+#include "Logger.h"
+
+NeoPixel _pixel(D1, 24);
+Logger _logger(9600);
 
 void setup() {
-  // put your setup code here, to run once:
-  pinMode(D5, OUTPUT);
+  _pixel.setup();
+  _logger.setup();
 }
 
-auto state = HIGH;
+uint16_t _hue = 0;
 void loop() {
-  state = state == HIGH ? LOW : HIGH;
-    
+  if(_hue >= 0xFFFF)
+     _hue = 0;
 
-  // put your main code here, to run repeatedly:
-  digitalWrite(D5, state);
-  delay(1000);
+  //_logger.info(String(_hue, HEX));
+  for(uint16_t i = 0; i < _pixel.getPixelCount(); i++) {
+    _pixel.setPixelColorHSV(i, _hue, 0xFF, 0xFF);
+  }
+
+  _hue += 200;
 }
